@@ -1,5 +1,7 @@
 const express = require('express')
 const MongoClient = require('mongodb').MongoClient;
+const cors = require('cors')
+const morgan = require('morgan')
 const dateConverter= require('./dateConverter')
 
 require('dotenv').config()
@@ -8,7 +10,9 @@ const uri = process.env.ATLAS_URI;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true});
 
 const app = express();
+app.use(cors());
 app.use(express.json());
+app.use(morgan('tiny'))
 
 app.get('/', (req,res) => {
   let day = dateConverter(new Date())
@@ -19,7 +23,7 @@ app.get('/', (req,res) => {
       if(error){
         throw error
       }
-      res.send(documents[day].word);
+      res.send(documents[day]);
     });
   })
 })
